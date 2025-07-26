@@ -16,7 +16,7 @@ import {
   Certification, 
   TeamMember,
   Project
-} from '../../types';
+} from '../../../types';
 
 interface JobApplication {
   jobId: number;
@@ -75,7 +75,8 @@ export const ApplicantView: React.FC<ApplicantViewProps> = ({ jobApplication }) 
       solana: [] as Skill[]
     },
     storytelling: [] as Skill[],
-    technicalMarketing: [] as Skill[]
+    technicalMarketing: [] as Skill[],
+    executive: [] as Skill[]
   });
 
   const [certificationsData, setCertificationsData] = useState<Certification[]>([]);
@@ -105,7 +106,12 @@ export const ApplicantView: React.FC<ApplicantViewProps> = ({ jobApplication }) 
       case 'educational':
         return !!(educationalData.degree && educationalData.fieldOfStudy && educationalData.institution && educationalData.graduationYear);
       case 'skills':
-        const totalSkills = skillsData.fullStack.length + skillsData.web3.evm.length + skillsData.web3.solana.length + skillsData.storytelling.length + skillsData.technicalMarketing.length;
+        const totalSkills = skillsData.fullStack.length + 
+                           skillsData.web3.evm.length + 
+                           skillsData.web3.solana.length + 
+                           skillsData.storytelling.length + 
+                           skillsData.technicalMarketing.length + 
+                           (skillsData.executive?.length || 0);
         return totalSkills > 0;
       case 'resume':
         return !!resumeFile;
@@ -188,7 +194,7 @@ export const ApplicantView: React.FC<ApplicantViewProps> = ({ jobApplication }) 
         ).length * 10
       },
       summary: {
-        totalSkills: skillsData.fullStack.length + skillsData.web3.evm.length + skillsData.web3.solana.length + skillsData.storytelling.length + skillsData.technicalMarketing.length,
+        totalSkills: skillsData.fullStack.length + skillsData.web3.evm.length + skillsData.web3.solana.length + skillsData.storytelling.length + skillsData.technicalMarketing.length + (skillsData.executive?.length || 0),
         totalCertifications: certificationsData.length,
         totalProjects: projects.length,
         totalTeamMembers: teamMembers.length,

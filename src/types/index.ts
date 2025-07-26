@@ -87,6 +87,7 @@ export interface ApplicationFormData {
     };
     storytelling: Skill[];
     technicalMarketing: Skill[];
+    executive?: Skill[];
   };
   certifications: Certification[];
   resume: File | null;

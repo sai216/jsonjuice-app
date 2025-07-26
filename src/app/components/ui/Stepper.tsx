@@ -64,8 +64,8 @@ export const Stepper: React.FC<StepperProps> = ({
                 </button>
 
                 {/* Step Label */}
-                <div className="ml-3 flex-1 min-w-0">
-                  <p className={`text-sm font-medium truncate ${
+                <div className="ml-3 flex-1">
+                  <p className={`text-sm font-medium ${
                     status === 'current' ? 'text-lime-400' : 
                     status === 'completed' ? 'text-slate-200' : 'text-slate-500'
                   }`}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Code, Award, Plus, X } from 'lucide-react';
-import { Skill, Certification } from '../../types';
+import { Skill, Certification } from '../../../types';
 
 interface SkillsCertificationsStepProps {
   skills: {
@@ -11,6 +11,7 @@ interface SkillsCertificationsStepProps {
     };
     storytelling: Skill[];
     technicalMarketing: Skill[];
+    executive?: Skill[];
   };
   certifications: Certification[];
   onSkillsChange: (skills: any) => void;
@@ -24,7 +25,7 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
   onCertificationsChange
 }) => {
   const [activeTab, setActiveTab] = useState<'skills' | 'certifications'>('skills');
-  const [activeSkillCategory, setActiveSkillCategory] = useState<'fullStack' | 'web3' | 'storytelling' | 'marketing'>('fullStack');
+  const [activeSkillCategory, setActiveSkillCategory] = useState<'fullStack' | 'web3' | 'creative' | 'marketing' | 'executive'>('fullStack');
   const [activeWeb3Tab, setActiveWeb3Tab] = useState<'evm' | 'solana'>('evm');
 
   // Skill categories
@@ -34,8 +35,9 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
       evm: ['Solidity', 'Vyper', 'Hardhat', 'Truffle', 'Web3.js', 'Ethers.js'],
       solana: ['Rust', 'Move', 'Anchor', 'Solana Web3.js']
     },
-    storytelling: ['Narrative Development', 'Image Development', 'Graphic Design', 'Basic Animation', 'Motion Animation', 'Short-form UGC Videos', 'Short Films', 'Collaborative Films'],
-    marketing: ['Google PPC', 'SEO', 'Social Content Development', 'Social Content Strategy', 'Email Marketing', 'Analytics']
+    creative: ['Narrative Development', 'Image Development', 'Graphic Design', 'Basic Animation', 'Motion Animation', 'Short-form UGC Videos', 'Short Films', 'Collaborative Films'],
+    marketing: ['Google PPC', 'SEO', 'Social Content Development', 'Social Content Strategy', 'Email Marketing', 'Analytics'],
+    executive: ['CEO', 'COO', 'CFO', 'CTO', 'CMO', 'CPO', 'CHRO', 'General Manager', 'VP of Engineering', 'VP of Sales']
   };
 
   const addCertification = () => {
@@ -99,7 +101,7 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
           }
         });
       }
-    } else if (category === 'storytelling') {
+    } else if (category === 'creative') {
       const existingIndex = skills.storytelling.findIndex(s => s.skill === skillName);
       if (existingIndex >= 0) {
         const updated = [...skills.storytelling];
@@ -121,6 +123,18 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
         onSkillsChange({
           ...skills,
           technicalMarketing: [...skills.technicalMarketing, { skill: skillName, level: 'beginner', years: 0, portfolio: '', ...data }]
+        });
+      }
+    } else if (category === 'executive') {
+      const existingIndex = skills.executive?.findIndex(s => s.skill === skillName) ?? -1;
+      if (existingIndex >= 0 && skills.executive) {
+        const updated = [...skills.executive];
+        updated[existingIndex] = { ...updated[existingIndex], ...data };
+        onSkillsChange({ ...skills, executive: updated });
+      } else {
+        onSkillsChange({
+          ...skills,
+          executive: [...(skills.executive || []), { skill: skillName, level: 'beginner', years: 0, portfolio: '', ...data }]
         });
       }
     }
@@ -148,7 +162,7 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
           solana: skills.web3.solana.filter(s => s.skill !== skillName)
         }
       });
-    } else if (category === 'storytelling') {
+    } else if (category === 'creative') {
       onSkillsChange({
         ...skills,
         storytelling: skills.storytelling.filter(s => s.skill !== skillName)
@@ -158,6 +172,11 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
         ...skills,
         technicalMarketing: skills.technicalMarketing.filter(s => s.skill !== skillName)
       });
+    } else if (category === 'executive') {
+      onSkillsChange({
+        ...skills,
+        executive: (skills.executive || []).filter(s => s.skill !== skillName)
+      });
     }
   };
 
@@ -166,8 +185,9 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
       case 'fullStack': return skills.fullStack;
       case 'web3-evm': return skills.web3.evm;
       case 'web3-solana': return skills.web3.solana;
-      case 'storytelling': return skills.storytelling;
+      case 'creative': return skills.storytelling;
       case 'marketing': return skills.technicalMarketing;
+      case 'executive': return skills.executive || [];
       default: return [];
     }
   };
@@ -310,14 +330,14 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
                 Web3
               </button>
               <button
-                onClick={() => setActiveSkillCategory('storytelling')}
+                onClick={() => setActiveSkillCategory('creative')}
                 className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                  activeSkillCategory === 'storytelling'
+                  activeSkillCategory === 'creative'
                     ? 'bg-lime-400/20 text-lime-300'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                 }`}
               >
-                Storytelling
+                Creative
               </button>
               <button
                 onClick={() => setActiveSkillCategory('marketing')}
@@ -328,6 +348,16 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
                 }`}
               >
                 Marketing
+              </button>
+              <button
+                onClick={() => setActiveSkillCategory('executive')}
+                className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                  activeSkillCategory === 'executive'
+                    ? 'bg-lime-400/20 text-lime-300'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                }`}
+              >
+                Executive
               </button>
             </div>
 
@@ -382,10 +412,13 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
               </div>
             )}
 
-            {activeSkillCategory === 'storytelling' && (
+            {activeSkillCategory === 'creative' && (
               <div>
-                <h3 className="text-xl font-semibold text-slate-200 mb-4">Storytelling & Creative</h3>
-                <SkillSelector category="storytelling" availableSkills={skillCategories.storytelling} />
+                <h3 className="text-xl font-semibold text-slate-200 mb-4">Creative & Storytelling</h3>
+                <p className="text-sm text-slate-400 mb-4">
+                  Creative skills including storytelling, visual design, and content creation
+                </p>
+                <SkillSelector category="creative" availableSkills={skillCategories.creative} />
               </div>
             )}
 
@@ -393,6 +426,26 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
               <div>
                 <h3 className="text-xl font-semibold text-slate-200 mb-4">Technical Marketing</h3>
                 <SkillSelector category="marketing" availableSkills={skillCategories.marketing} />
+              </div>
+            )}
+
+            {activeSkillCategory === 'executive' && (
+              <div>
+                <h3 className="text-xl font-semibold text-slate-200 mb-4">Executive Management</h3>
+                <p className="text-sm text-slate-400 mb-4">
+                  C-level and executive leadership positions
+                </p>
+                <div className="mb-4 p-4 bg-blue-900/20 border border-blue-700/50 rounded-lg">
+                  <h4 className="font-medium text-blue-400 mb-2">Executive Roles Include:</h4>
+                  <ul className="text-sm text-slate-300 space-y-1">
+                    <li>• <strong>CEO</strong> - Chief Executive Officer</li>
+                    <li>• <strong>COO</strong> - Chief Operating Officer</li>
+                    <li>• <strong>CFO</strong> - Chief Financial Officer</li>
+                    <li>• <strong>CTO</strong> - Chief Technology Officer</li>
+                    <li>• <strong>CMO</strong> - Chief Marketing Officer</li>
+                  </ul>
+                </div>
+                <SkillSelector category="executive" availableSkills={skillCategories.executive} />
               </div>
             )}
 
@@ -409,12 +462,16 @@ export const SkillsCertificationsStep: React.FC<SkillsCertificationsStepProps> =
                   <span className="text-slate-300 ml-2 font-medium">{skills.web3.evm.length + skills.web3.solana.length}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400">Storytelling:</span>
+                  <span className="text-slate-400">Creative:</span>
                   <span className="text-slate-300 ml-2 font-medium">{skills.storytelling.length}</span>
                 </div>
                 <div>
                   <span className="text-slate-400">Marketing:</span>
                   <span className="text-slate-300 ml-2 font-medium">{skills.technicalMarketing.length}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400">Executive:</span>
+                  <span className="text-slate-300 ml-2 font-medium">{(skills.executive || []).length}</span>
                 </div>
               </div>
             </div>
